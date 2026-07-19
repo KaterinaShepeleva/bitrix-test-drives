@@ -81,6 +81,7 @@ class Cars
         if (!isset($status) || !in_array($status, static::STATUSES)) {
             $status = self::STATUSES[0]; // дефолтный статус - available
         }
+        $statusId = static::getStatusIdByCode($status);
 
         $year = isset($data['year']) ? (int)$data['year'] : 0;
         $pricePerDay = isset($data['pricePerDay']) ? (int)$data['pricePerDay'] : 0;
@@ -89,7 +90,7 @@ class Cars
             'UF_MODEL' => $model,
             'UF_YEAR' => $year,
             'UF_VIN' => $vin,
-            'UF_STATUS' => $status,
+            'UF_STATUS' => $statusId,
             'UF_PRICE_PER_DAY' => $pricePerDay,
         ]);
 
@@ -97,8 +98,6 @@ class Cars
             $id = $result->getId();
             return "Добавлен автомобиль $model с ID = $id";
         } else {
-            var_dump($result);
-            die();
             throw new \Bitrix\Main\DB\Exception('Ошибка при добавлении нового автомобиля в БД');
         }
     }
@@ -125,5 +124,18 @@ class Cars
         $entityCars = HighloadBlockTable::compileEntity($hlCars);
 
         return $entityCars->getDataClass();
+    }
+
+    private static function getStatusIdByCode($statusCode) {
+        $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
+        $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
+        $dataClass = $entityStatuses->getDataClass();
+
+        $result = $dataClass::getList([
+            'select' => ['ID'],
+            'filter' => ['=UF_CODE' => $statusCode],
+        ])->fetch();
+
+        return $result ? (int)$result['ID'] : 0;
     }
 }
