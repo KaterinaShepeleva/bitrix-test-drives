@@ -6,6 +6,8 @@ use Bitrix\Main\Loader;
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
+use Bitrix\Main\ArgumentException;
+use Bitrix\Main\DB\Exception;
 
 Loader::includeModule('highloadblock');
 
@@ -57,7 +59,7 @@ class Cars
         $model = isset($data['model']) ? trim((string)$data['model']) : '';
 
         if ($model === '') {
-            throw new \Bitrix\Main\ArgumentException('Поле "Модель" обязательное');
+            throw new ArgumentException('Поле "Модель" обязательное');
         }
 
         $dataClass = self::getCarsDataClass();
@@ -71,7 +73,7 @@ class Cars
             ])->fetch();
 
             if ($checkVin) {
-                throw new \Bitrix\Main\ArgumentException('Автомобиль с таким VIN уже существует');
+                throw new ArgumentException('Автомобиль с таким VIN уже существует');
             }
         }
 
@@ -96,7 +98,7 @@ class Cars
             $id = $result->getId();
             return "Добавлен автомобиль $model с ID = $id";
         } else {
-            throw new \Bitrix\Main\DB\Exception('Ошибка при добавлении нового автомобиля в БД');
+            throw new Exception('Ошибка при добавлении нового автомобиля в БД');
         }
     }
 
