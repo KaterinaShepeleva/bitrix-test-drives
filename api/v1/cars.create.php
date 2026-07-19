@@ -1,0 +1,38 @@
+<?php
+
+use Bitrix\Main\Context;
+use Local\Classes\Cars;
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.php';
+
+header('Content-Type: application/json; charset=UTF-8');
+
+// получаем информацию о новом автомобиле
+$request = Context::getCurrent()->getRequest();
+$data = [
+    'model' => $request->getPost('model'),
+    'year' => $request->getPost('year'),
+    'vin' => $request->getPost('vin'),
+    'status' => $request->getPost('status'),
+    'pricePerDay' => $request->getPost('pricePerDay'),
+];
+
+// echo json_encode($data);
+// die();
+
+try {
+    $result = Cars::create($data);
+
+    echo json_encode([
+        'success' => true,
+        'data' => $result,
+    ]);
+
+} catch (\Throwable $e) {
+    http_response_code(400);
+
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage(),
+    ]);
+}

@@ -1,0 +1,11 @@
+/bitrix/
+/upload/
+
+# Локальные настройки
+/.osp/
+/.vscode/
+/.idea/
+
+# Логи
+logs/
+*.log
