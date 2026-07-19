@@ -7,8 +7,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_be
 
 header('Content-Type: application/json; charset=UTF-8');
 
+// получаем информацию о тест-драйве
 $request = Context::getCurrent()->getRequest();
-$data = $request->getPost('testDrive');
+$data = [
+    'carId' => $request->getPost('carId'),
+    'dateStart' => $request->getPost('dateStart'),
+    'dateEnd' => $request->getPost('dateEnd'),
+];
 
 try {
     $result = TestDrives::create($data);
@@ -17,9 +22,8 @@ try {
         'success' => true,
         'data' => $result,
     ]);
-
 } catch (\Throwable $e) {
-    http_response_code(500);
+    http_response_code(400);
 
     echo json_encode([
         'success' => false,
