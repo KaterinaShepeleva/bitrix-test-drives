@@ -32,7 +32,7 @@ class Cars
         $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
         $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
 
-        $result = $dataClass::getList([
+        return $dataClass::getList([
             'select' => [
                 'ID',
                 'MODEL' => 'UF_MODEL',
@@ -50,8 +50,6 @@ class Cars
             ],
             'filter' => $statusCode !== static::FILTER_ALL ? ['=STATUS_REF.UF_CODE' => $statusCode] : [],
         ])->fetchAll();
-
-        return $result;
     }
 
     public static function create($data = [])

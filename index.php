@@ -7,8 +7,7 @@ $APPLICATION->SetTitle("Сервис бронирования автомобил
 
 <div class="row">
 	<div class="col-12 col-md-6">
-		<? echo "Hello world";
-		$APPLICATION->IncludeComponent(
+		<? $APPLICATION->IncludeComponent(
 			"testComponents:listing.cars",
 			"",
 			array()
