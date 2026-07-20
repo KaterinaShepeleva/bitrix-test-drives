@@ -1,0 +1,447 @@
+{
+  "info": {
+    "_postman_id": "b841d7ec-e6fc-4ecc-8071-48541983610a",
+    "name": "Test-Drives API (Шепелева)",
+    "description": "API для тестового задания",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56710813",
+    "_collection_link": "https://go.postman.co/collection/56710813-b841d7ec-e6fc-4ecc-8071-48541983610a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Cars",
+      "item": [
+        {
+          "name": "Get available cars",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.get-list.php?status=available",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.get-list.php"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "available"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.get-list.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.get-list.php"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "Get cars on repair",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.get-list.php?status=repair",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.get-list.php"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "repair"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "model",
+                  "value": "Volkswagen Tiguan",
+                  "type": "text",
+                  "uuid": "0ab1517b-af34-4747-9e2d-01e097426a98"
+                },
+                {
+                  "key": "year",
+                  "value": "2021",
+                  "type": "text",
+                  "uuid": "dd7a80d5-3d14-4890-985f-102c94f9ec1c"
+                },
+                {
+                  "key": "status",
+                  "value": "available",
+                  "type": "text",
+                  "uuid": "6d90320d-fb9e-4da5-bfa8-13a0880599bb"
+                },
+                {
+                  "key": "vin",
+                  "value": "XW8ZZZ5NZLG094137",
+                  "type": "text",
+                  "uuid": "e2a779ce-1d81-4ee9-961c-0ef9ecb5c044"
+                },
+                {
+                  "key": "pricePerDay",
+                  "value": "4300",
+                  "type": "text",
+                  "uuid": "49dacc5d-78f2-4277-886d-e15473a99aaf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.create.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.create.php"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Create car (existing VIN)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "model",
+                  "value": "Volkswagen Tiguan",
+                  "type": "text",
+                  "uuid": "0ab1517b-af34-4747-9e2d-01e097426a98"
+                },
+                {
+                  "key": "year",
+                  "value": "2021",
+                  "type": "text",
+                  "uuid": "dd7a80d5-3d14-4890-985f-102c94f9ec1c"
+                },
+                {
+                  "key": "status",
+                  "value": "available",
+                  "type": "text",
+                  "uuid": "6d90320d-fb9e-4da5-bfa8-13a0880599bb"
+                },
+                {
+                  "key": "vin",
+                  "value": "X9WAA41A4RD052731",
+                  "type": "text",
+                  "uuid": "e2a779ce-1d81-4ee9-961c-0ef9ecb5c044"
+                },
+                {
+                  "key": "pricePerDay",
+                  "value": "4300",
+                  "type": "text",
+                  "uuid": "49dacc5d-78f2-4277-886d-e15473a99aaf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.create.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.create.php"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "10",
+                  "type": "text",
+                  "uuid": "b0e4a0d3-bf19-45b8-ae7f-d4f6d4c67898"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.delete.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.delete.php"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Create multiple cars",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n  {\r\n    \"model\": \"Skoda Octavia\",\r\n    \"year\": 2021,\r\n    \"vin\": \"XW8AG4NEMK048125\",\r\n    \"status\": 1,\r\n    \"pricePerDay\": 3500\r\n  },\r\n  {\r\n    \"model\": \"Toyota Camry\",\r\n    \"year\": 2020,\r\n    \"vin\": \"JTNBF1FK2L35481\",\r\n    \"status\": 2,\r\n    \"pricePerDay\": 4800\r\n  },\r\n  {\r\n    \"model\": \"Hyundai Tucson\",\r\n    \"year\": 2021,\r\n    \"vin\": \"XWEU3810047291\",\r\n    \"status\": 1,\r\n    \"pricePerDay\": 4000\r\n  }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.create-many.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.create-many.php"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update car",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "id",
+                  "value": "11",
+                  "type": "text",
+                  "uuid": "27ba135b-59ef-4ce5-9d46-340ab123fd6d"
+                },
+                {
+                  "key": "model",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "9b7b5f55-0ddf-4ea6-bcc8-886f1d7668c0",
+                  "disabled": true
+                },
+                {
+                  "key": "year",
+                  "value": "2022",
+                  "type": "text",
+                  "uuid": "56cc0fc5-2ae1-4c98-8ffc-53b6771f2845",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "repair",
+                  "type": "text",
+                  "uuid": "0d18607b-afae-4205-8b56-3ece54dbad57"
+                },
+                {
+                  "key": "pricePerDay",
+                  "value": "4500",
+                  "type": "text",
+                  "uuid": "6ed82bc6-7809-4c55-ad38-3f5c4c98a5b9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/cars.update.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cars.update.php"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "TestDrives",
+      "item": [
+        {
+          "name": "Create test-drive",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "carId",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "63b47f1c-a2bb-4b4e-a24c-88b56a71bb16"
+                },
+                {
+                  "key": "dateStart",
+                  "value": "02.08.2026 10:00:00",
+                  "type": "text",
+                  "uuid": "7658268f-cc24-4b27-96c3-ba8e1984907a"
+                },
+                {
+                  "key": "dateEnd",
+                  "value": "04.09.2026 10:00:00",
+                  "type": "text",
+                  "uuid": "55dcb41b-dd31-4606-a002-5e31553fc5ff"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://bitrix-cars.local/api/v1/test-drives.create.php",
+              "protocol": "http",
+              "host": [
+                "bitrix-cars",
+                "local"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "test-drives.create.php"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

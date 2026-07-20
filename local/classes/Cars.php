@@ -231,10 +231,10 @@ class Cars
 
     private static function getCarsDataClass()
     {
-        $hlTestDrives = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
-        $entityTestDrives = HighloadBlockTable::compileEntity($hlTestDrives);
+        $hlCars = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
+        $entityCars = HighloadBlockTable::compileEntity($hlCars);
 
-        return $entityTestDrives->getDataClass();
+        return $entityCars->getDataClass();
     }
 
     private static function checkCarById($carId)

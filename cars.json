@@ -1,0 +1,72 @@
+[
+  {
+    "UF_MODEL": "Skoda Octavia",
+    "UF_YEAR": 2021,
+    "UF_VIN": "XW8AG4NE2MK048125",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 3500
+  },
+  {
+    "UF_MODEL": "Toyota Camry",
+    "UF_YEAR": 2020,
+    "UF_VIN": "JTNBF1FK2L3095481",
+    "UF_STATUS": 2,
+    "UF_PRICE_PER_DAY": 4800
+  },
+  {
+    "UF_MODEL": "Hyundai Tucson",
+    "UF_YEAR": 2021,
+    "UF_VIN": "XWEU381BLM0047291",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 4000
+  },
+  {
+    "UF_MODEL": "Exeed VX",
+    "UF_YEAR": 2023,
+    "UF_VIN": "LVVEC32D5ND012845",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 6500
+  },
+  {
+    "UF_MODEL": "Omoda C5",
+    "UF_YEAR": 2022,
+    "UF_VIN": "LVVDB42B1ND059371",
+    "UF_STATUS": 2,
+    "UF_PRICE_PER_DAY": 3400
+  },
+  {
+    "UF_MODEL": "BMW 530i",
+    "UF_YEAR": 2020,
+    "UF_VIN": "WBA51BJ08LGG15482",
+    "UF_STATUS": 2,
+    "UF_PRICE_PER_DAY": 7500
+  },
+  {
+    "UF_MODEL": "Volkswagen Tiguan",
+    "UF_YEAR": 2021,
+    "UF_VIN": "XW8ZZZ5NZLG094137",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 4300
+  },
+  {
+    "UF_MODEL": "Mazda CX-5",
+    "UF_YEAR": 2020,
+    "UF_VIN": "JM3KF4W76L0395721",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 3900
+  },
+  {
+    "UF_MODEL": "GAC GS8",
+    "UF_YEAR": 2023,
+    "UF_VIN": "LFVGR42C7ND028491",
+    "UF_STATUS": 2,
+    "UF_PRICE_PER_DAY": 5800
+  },
+  {
+    "UF_MODEL": "Lada Vesta NG",
+    "UF_YEAR": 2023,
+    "UF_VIN": "XTA218070P0149275",
+    "UF_STATUS": 1,
+    "UF_PRICE_PER_DAY": 2500
+  }
+]

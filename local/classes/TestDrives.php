@@ -48,39 +48,39 @@ class TestDrives
         // проверяем существование машины по id и её статус
 
         $carId = isset($data['carId']) ? (int)$data['carId'] : 0;
-        if ($carId > 0) {
-            $hlCars = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
-            $entityCars = HighloadBlockTable::compileEntity($hlCars);
-            $dataClass = $entityCars->getDataClass();
-
-            $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
-            $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
-
-            $car = $dataClass::getList([
-                'select' => [
-                    'ID',
-                    'PRICE_PER_DAY' => 'UF_PRICE_PER_DAY',
-                    'STATUS' => 'STATUSES_REF.UF_CODE',
-                ],
-                'runtime' => [
-                    new Reference(
-                        'STATUSES_REF',
-                        $entityStatuses,
-                        Join::on('this.UF_STATUS', 'ref.ID')
-                    )
-                ],
-                'filter' => ['=ID' => $carId],
-            ])->fetch();
-
-            if (!$car) {
-                throw new ArgumentException('Автомобиль не найден');
-            }
-
-            if ($car['STATUS'] !== 'available') {
-                throw new ArgumentException('Автомобиль недоступен для бронирования');
-            }
-        } else {
+        if ($carId <= 0) {
             throw new ArgumentException('Некорректный ID автомобиля');
+        }
+
+        $hlCars = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
+        $entityCars = HighloadBlockTable::compileEntity($hlCars);
+        $dataClass = $entityCars->getDataClass();
+
+        $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
+        $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
+
+        $car = $dataClass::getList([
+            'select' => [
+                'ID',
+                'PRICE_PER_DAY' => 'UF_PRICE_PER_DAY',
+                'STATUS' => 'STATUSES_REF.UF_CODE',
+            ],
+            'runtime' => [
+                new Reference(
+                    'STATUSES_REF',
+                    $entityStatuses,
+                    Join::on('this.UF_STATUS', 'ref.ID')
+                )
+            ],
+            'filter' => ['=ID' => $carId],
+        ])->fetch();
+
+        if (!$car) {
+            throw new ArgumentException('Автомобиль не найден');
+        }
+
+        if ($car['STATUS'] !== 'available') {
+            throw new ArgumentException('Автомобиль недоступен для бронирования');
         }
 
         // проверяем, что заданы корректные даты
@@ -116,7 +116,7 @@ class TestDrives
         }
 
         // проверяем, что машина не забронирована
-        
+
         $dataClass = static::getTestDrivesDataClass();
         $takenTestDrives = $dataClass::getList([
             'select' => ['ID'],
