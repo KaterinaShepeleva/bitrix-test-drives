@@ -6,6 +6,7 @@ use Bitrix\Main\Loader;
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
+use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\ArgumentException;
 use Bitrix\Main\DB\Exception;
 
@@ -15,6 +16,7 @@ class Cars
 {
     private const CARS_HL_BLOCK_ID = 1; // из админки
     private const STATUSES_HL_BLOCK_ID = 2;
+    private const TESTDRIVES_HL_BLOCK_ID = 3;
     private const FILTER_ALL = ''; // пустой фильтр (выбирает все автомобили)
     private const STATUSES = ['available', 'repair'];
 
@@ -38,13 +40,13 @@ class Cars
     public static function getList($status = '')
     {
         $statusCode = isset($status) ? (string)$status : static::FILTER_ALL;
-        $dataClass = self::getCarsDataClass();
+        $dataClassCars = self::getCarsDataClass();
 
         // получаем сущность статусов для runtime
         $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
         $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
 
-        return $dataClass::getList([
+        return $dataClassCars::getList([
             'select' => [
                 'ID',
                 'MODEL' => 'UF_MODEL',
@@ -60,7 +62,9 @@ class Cars
                     Join::on('this.UF_STATUS', 'ref.ID')
                 )
             ],
-            'filter' => $statusCode !== static::FILTER_ALL ? ['=STATUS_REF.UF_CODE' => $statusCode] : [],
+            'filter' => $statusCode !== static::FILTER_ALL
+                ? ['=STATUS_REF.UF_CODE' => $statusCode]
+                : [],
         ])->fetchAll();
     }
 
@@ -72,12 +76,12 @@ class Cars
             throw new ArgumentException('Поле "Модель" обязательное');
         }
 
-        $dataClass = self::getCarsDataClass();
+        $dataClassCars = self::getCarsDataClass();
         $vin = isset($data['vin']) ? trim((string)$data['vin']) : '';
 
         // если VIN задан, проверяем, что он уникальный
         if ($vin !== '') {
-            $checkVin = $dataClass::getList([
+            $checkVin = $dataClassCars::getList([
                 'select' => ['ID'],
                 'filter' => ['=UF_VIN' => $vin],
             ])->fetch();
@@ -96,7 +100,7 @@ class Cars
         $year = isset($data['year']) ? (int)$data['year'] : 0;
         $pricePerDay = isset($data['pricePerDay']) ? (int)$data['pricePerDay'] : 0;
 
-        $result = $dataClass::add([
+        $result = $dataClassCars::add([
             'UF_MODEL' => $model,
             'UF_YEAR' => $year,
             'UF_VIN' => $vin,
@@ -126,12 +130,12 @@ class Cars
             $fieldsToUpdate['UF_MODEL'] = $model;
         }
 
-        $dataClass = self::getCarsDataClass();
+        $dataClassCars = self::getCarsDataClass();
         $vin = isset($data['vin']) ? trim((string)$data['vin']) : '';
 
         // если VIN задан, проверяем, что он уникальный (исключая текущий автомобиль)
         if ($vin !== '') {
-            $checkVin = $dataClass::getList([
+            $checkVin = $dataClassCars::getList([
                 'select' => ['ID'],
                 'filter' => [
                     '=UF_VIN' => $vin,
@@ -168,7 +172,7 @@ class Cars
             throw new ArgumentException('Не переданы данные для изменения');
         }
 
-        $result = $dataClass::update($this->id, $fieldsToUpdate);
+        $result = $dataClassCars::update($this->id, $fieldsToUpdate);
 
         if ($result->isSuccess()) {
             return "Изменен автомобиль с ID = $this->id";
@@ -177,24 +181,51 @@ class Cars
         }
     }
 
-    public function delete($id = null)
+    public function delete()
     {
-        return 'delete not implemented';
+        $hlTestDrives = HighloadBlockTable::getById(static::TESTDRIVES_HL_BLOCK_ID)->fetch();
+        $entityTestDrives = HighloadBlockTable::compileEntity($hlTestDrives);
+        $dataClassCars = $entityTestDrives->getDataClass();
+
+        // проверяем, что для автомобиля нет бронирований сейчас или в будущем
+        $futureTestDrive = $dataClassCars::getList([
+            'select' => ['ID'],
+            'filter' => [
+                '=UF_CAR' => $this->id,
+                '>UF_DATE_END' => new DateTime(),
+            ],
+            'limit' => 1,
+        ])->fetch();
+
+        if ($futureTestDrive) {
+            throw new ArgumentException(
+                'Для автомобиля существуют активные или будущие бронирования'
+            );
+        }
+
+        $dataClass = static::getCarsDataClass();
+        $result = $dataClass::delete($this->id);
+
+        if ($result->isSuccess()) {
+            return "Удален автомобиль с ID = $this->id";
+        } else {
+            throw new Exception('Ошибка при удалении автомобиля из БД');
+        }
     }
 
     private static function getCarsDataClass()
     {
-        $hlCars = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
-        $entityCars = HighloadBlockTable::compileEntity($hlCars);
+        $hlTestDrives = HighloadBlockTable::getById(static::CARS_HL_BLOCK_ID)->fetch();
+        $entityTestDrives = HighloadBlockTable::compileEntity($hlTestDrives);
 
-        return $entityCars->getDataClass();
+        return $entityTestDrives->getDataClass();
     }
 
     private static function checkCarById($carId)
     {
-        $dataClass = static::getCarsDataClass();
+        $dataClassCars = static::getCarsDataClass();
 
-        $car = $dataClass::getList([
+        $car = $dataClassCars::getList([
             'select' => ['ID'],
             'filter' => ['=ID' => $carId],
         ])->fetch();
@@ -206,9 +237,9 @@ class Cars
     {
         $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
         $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
-        $dataClass = $entityStatuses->getDataClass();
+        $dataClassCars = $entityStatuses->getDataClass();
 
-        $result = $dataClass::getList([
+        $result = $dataClassCars::getList([
             'select' => ['ID'],
             'filter' => ['=UF_CODE' => $statusCode],
         ])->fetch();

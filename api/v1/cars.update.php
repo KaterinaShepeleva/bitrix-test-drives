@@ -9,8 +9,6 @@ header('Content-Type: application/json; charset=UTF-8');
 
 // получаем id автомобиля
 $request = Context::getCurrent()->getRequest();
-$cars = new Cars($request->getPost('id'));
-
 $data = [
     'model' => $request->getPost('model'),
     'year' => $request->getPost('year'),
@@ -20,6 +18,7 @@ $data = [
 ];
 
 try {
+    $cars = new Cars($request->getPost('id'));
     $result = $cars->update($data);
 
     echo json_encode([

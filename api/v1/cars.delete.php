@@ -11,16 +11,14 @@ header('Content-Type: application/json; charset=UTF-8');
 $request = Context::getCurrent()->getRequest();
 $id = $request->get('id');
 
-$cars = new Cars($id);
-
 try {
-    $result = $cars->delete($id);
+    $car = new Cars($id);
+    $result = $car->delete();
 
     echo json_encode([
         'success' => true,
         'data' => $result,
     ]);
-
 } catch (\Throwable $e) {
     http_response_code(400);
 
