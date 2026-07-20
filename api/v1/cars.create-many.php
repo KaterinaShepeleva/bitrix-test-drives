@@ -9,7 +9,7 @@ header('Content-Type: application/json; charset=UTF-8');
 
 // получаем информацию о новых автомобилях
 $request = Context::getCurrent()->getRequest();
-$data = $request->getPost('cars');
+$data = json_decode($request->getInput(), true);
 
 try {
     $result = Cars::createMany($data);

@@ -3,6 +3,7 @@
 namespace Local\Classes;
 
 use Bitrix\Main\Loader;
+use Bitrix\Main\Application;
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
@@ -118,7 +119,22 @@ class Cars
 
     public static function createMany($data = [])
     {
-        return 'createMany not implemented';
+        $connection = Application::getConnection();
+
+        $connection->startTransaction();
+
+        try {
+            foreach ($data as $car) {
+                static::create($car);
+            }
+
+            $connection->commitTransaction();
+            
+            return 'Добавлено новых автомобилей: ' . count($data);
+        } catch (\Throwable $e) {
+            $connection->rollbackTransaction();
+            throw $e;
+        }
     }
 
     public function update($data = [])
