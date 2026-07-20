@@ -116,6 +116,7 @@ class TestDrives
         }
 
         // проверяем, что машина не забронирована
+        
         $dataClass = static::getTestDrivesDataClass();
         $takenTestDrives = $dataClass::getList([
             'select' => ['ID'],
@@ -132,6 +133,7 @@ class TestDrives
         }
 
         // рассчитываем стоимость бронирования
+
         $days = $dateStart->getDiff($dateEnd)->days + 1; // дни интервала включительно
         $total = $car['PRICE_PER_DAY'] * $days;
 

@@ -17,9 +17,6 @@ $data = [
     'pricePerDay' => $request->getPost('pricePerDay'),
 ];
 
-// echo json_encode($data);
-// die();
-
 try {
     $result = Cars::create($data);
 

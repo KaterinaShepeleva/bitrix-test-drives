@@ -9,20 +9,23 @@ header('Content-Type: application/json; charset=UTF-8');
 
 // получаем id автомобиля
 $request = Context::getCurrent()->getRequest();
-$id = $request->get('id');
+$cars = new Cars($request->getPost('id'));
 
-$cars = new Cars($id);
-
-// вопрос: параметры автомобиля нужно передавать в $cars->update() или в конструктор класса (сохранять как поля)?
+$data = [
+    'model' => $request->getPost('model'),
+    'year' => $request->getPost('year'),
+    'vin' => $request->getPost('vin'),
+    'status' => $request->getPost('status'),
+    'pricePerDay' => $request->getPost('pricePerDay'),
+];
 
 try {
-    $result = $cars->update($id);
+    $result = $cars->update($data);
 
     echo json_encode([
         'success' => true,
         'data' => $result,
     ]);
-
 } catch (\Throwable $e) {
     http_response_code(400);
 

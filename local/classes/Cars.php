@@ -22,7 +22,17 @@ class Cars
 
     public function __construct($id)
     {
-        $this->id = $id ?? null;
+        $carId = (int)$id;
+
+        if ($carId <= 0) {
+            throw new ArgumentException('Некорректный ID автомобиля');
+        }
+
+        if (static::checkCarById($carId)) {
+            $this->id = $carId;
+        } else {
+            throw new ArgumentException('Автомобиль с таким ID не найден');
+        }
     }
 
     public static function getList($status = '')
@@ -107,10 +117,64 @@ class Cars
         return 'createMany not implemented';
     }
 
-    public function update($id = null)
+    public function update($data = [])
     {
-        echo static::FILTER_ALL;
-        return 'update not implemented';
+        $fieldsToUpdate = [];
+        $model = isset($data['model']) ? trim((string)$data['model']) : '';
+
+        if ($model !== '') {
+            $fieldsToUpdate['UF_MODEL'] = $model;
+        }
+
+        $dataClass = self::getCarsDataClass();
+        $vin = isset($data['vin']) ? trim((string)$data['vin']) : '';
+
+        // если VIN задан, проверяем, что он уникальный (исключая текущий автомобиль)
+        if ($vin !== '') {
+            $checkVin = $dataClass::getList([
+                'select' => ['ID'],
+                'filter' => [
+                    '=UF_VIN' => $vin,
+                    '!=ID' => $this->id,
+                ],
+            ])->fetch();
+
+            if ($checkVin) {
+                throw new ArgumentException('Автомобиль с таким VIN уже существует');
+            } else {
+                $fieldsToUpdate['UF_VIN'] = $vin;
+            }
+        }
+
+        if (isset($data['status'])) {
+            $status = (string)$data['status'];
+
+            if (!in_array($status, static::STATUSES, true)) {
+                throw new ArgumentException('Некорректный статус');
+            }
+
+            $fieldsToUpdate['UF_STATUS'] = static::getStatusIdByCode($status);
+        }
+
+        if (isset($data['year'])) {
+            $fieldsToUpdate['UF_YEAR'] = (int)$data['year'];
+        }
+
+        if (isset($data['pricePerDay'])) {
+            $fieldsToUpdate['UF_PRICE_PER_DAY'] = (int)$data['pricePerDay'];
+        }
+
+        if (empty($fieldsToUpdate)) {
+            throw new ArgumentException('Не переданы данные для изменения');
+        }
+
+        $result = $dataClass::update($this->id, $fieldsToUpdate);
+
+        if ($result->isSuccess()) {
+            return "Изменен автомобиль с ID = $this->id";
+        } else {
+            throw new Exception('Ошибка при изменении автомобиля в БД');
+        }
     }
 
     public function delete($id = null)
@@ -126,7 +190,20 @@ class Cars
         return $entityCars->getDataClass();
     }
 
-    private static function getStatusIdByCode($statusCode) {
+    private static function checkCarById($carId)
+    {
+        $dataClass = static::getCarsDataClass();
+
+        $car = $dataClass::getList([
+            'select' => ['ID'],
+            'filter' => ['=ID' => $carId],
+        ])->fetch();
+
+        return (bool)$car;
+    }
+
+    private static function getStatusIdByCode($statusCode)
+    {
         $hlStatuses = HighloadBlockTable::getById(static::STATUSES_HL_BLOCK_ID)->fetch();
         $entityStatuses = HighloadBlockTable::compileEntity($hlStatuses);
         $dataClass = $entityStatuses->getDataClass();
